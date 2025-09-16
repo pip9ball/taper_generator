@@ -155,12 +155,12 @@ def generate_gcode(profile_points, tool_diameter, feed_rate_ipm, pass_depth_in, 
 
     lines = []
     lines.append('%')
-    lines.append('(************************************************************)')
+    lines.append('(***********************************************************************)')
     for line_text in header_lines:
         lines.append('( * {:<{width}})'.format(line_text, width=field_width))
-    lines.append('(************************************************************)')
+    lines.append('(***********************************************************************)')
     lines.append('')
-
+                
     lines.append('G20  ; Units in inches')
     lines.append('G90  ; Absolute positioning')
     lines.append('G94  ; Feed per minute mode')
@@ -260,13 +260,14 @@ def main():
 #            verbose=True
 #        )
         st.subheader("Generated G-code (first 50 lines):")
-        st.text("\n".join(gcode.splitlines()[:50]))
+        st.code("\n".join(gcode.splitlines()[:50]))
 
         # Provide download button
         st.download_button("Download G-code", data=gcode, file_name="taper.nc", mime="text/plain")
 
 if __name__ == "__main__":
     main()
+
 
 
 
