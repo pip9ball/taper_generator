@@ -259,14 +259,15 @@ def main():
 #            step,
 #            verbose=True
 #        )
-        st.subheader("Generated G-code (first 50 lines):")
-        st.code("\n".join(gcode.splitlines()[:50]))
+        st.subheader("Generated G-code (first 100 lines):")
+        st.code("\n".join(gcode.splitlines()[:100]))
 
         # Provide download button
         st.download_button("Download G-code", data=gcode, file_name="taper.nc", mime="text/plain")
 
 if __name__ == "__main__":
     main()
+
 
 
 
