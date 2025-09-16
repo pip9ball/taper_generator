@@ -17,6 +17,43 @@ def linear_interpolate(x_vals, y_vals, x):
     y_vals = np.array(y_vals)
     return np.interp(x, x_vals, y_vals)
 
+def get_profile_points(default_points=None):
+    with st.expander("Taper Profile Points"):
+        #st.write("### Enter taper profile points (position in inches and diameter in inches)")
+
+        if default_points is None:
+            default_points = [(0.0, 0.840), (14.5, 0.65), (29.0, 0.508)]
+
+        # Let user select number of points
+        num_points = st.number_input("Number of points", min_value=2, max_value=20, value=len(default_points), step=1)
+
+        positions = []
+        diameters = []
+
+        for i in range(num_points):
+            col1, col2 = st.columns(2)
+            with col1:
+                pos = st.number_input(f"Point {i+1} position (inches)", value=default_points[i][0] if i < len(default_points) else 0.0, format="%.4f", step=0.01)
+            with col2:
+                dia = st.number_input(f"Point {i+1} diameter (inches)", value=default_points[i][1] if i < len(default_points) else 0.0, format="%.4f", step=0.01)
+
+            positions.append(pos)
+            diameters.append(dia)
+
+        # Validate: positions must be strictly increasing
+        if any(earlier >= later for earlier, later in zip(positions, positions[1:])):
+            st.error("Positions must be in strictly increasing order.")
+            return None
+
+        # Validate: diameters positive and reasonable
+        if any(d <= 0 for d in diameters):
+            st.error("Diameters must be positive numbers.")
+            return None
+
+        profile_points = list(zip(positions, diameters))
+        return profile_points
+
+
 # Matplotlib-based 3D visualization fallback
 def plot_mpl_3d(profile_points, taper_length):
     profile_points = sorted(profile_points, key=lambda p: p[0])
@@ -357,37 +394,27 @@ def generate_taper_gcode_with_finish_joint(
 def main():
     st.title("CNC Taper Generator Web App (Inches & IPM)")
 
-    profile_input = st.text_area(
-        "Enter taper profile points as comma separated (x1, d1, x2, d2, ...)",
-        value="0,0.840,16,0.580,29,0.502"
-    )
-
-    try:
-        vals = [float(v.strip()) for v in profile_input.split(",")]
-        if len(vals) % 2 != 0:
-            st.error("Profile points must be in pairs of x and diameter.")
-            return
-        profile_points = [(vals[i], vals[i+1]) for i in range(0, len(vals), 2)]
-    except Exception as e:
-        st.error(f"Invalid input: {e}")
-        return
-
-    col1,col2 = st.columns(2)
+    profile_points = get_profile_points()
     
-    with col1:
-        start_diameter = st.number_input("Starting Diameter (in inches)", value=1.0, min_value=0.01)
-        finish_diameter = st.number_input("Finish Diameter (in inches, 0 = default to first profile)", value=0.0, min_value=0.0)
-        if finish_diameter == 0.0:
-            finish_diameter = profile_points[0][1]
-        taper_length = st.number_input("Taper Length (in inches)", value=29.0, min_value=0.01)
-        tail_extension = st.number_input("Tailstock Extension (in inches)", value=2.0, min_value=0.0)
-        step = st.number_input("Step Size (inches)", value=0.25, min_value=0.001)
-    with col2:
-        head_extension = st.number_input("Headstock Extension (in inches)", value=2.0, min_value=0.0)
-        tool_diameter = st.number_input("Tool Diameter (in inches)", value=0.625, min_value=0.01)
-        pass_depth = st.number_input("Pass Depth (radial, in inches)", value=0.025, min_value=0.001)
-        feed_rate = st.number_input("Feed Rate (inches per minute)", value=1000, min_value=1)
-        safe_clearance = st.number_input("Safe Clearance (inches)", value=0.2, min_value=0.001)
+
+    st.markdown("---")
+    with st.expander("Machining Parameters"): 
+        col1,col2 = st.columns(2)
+        
+        with col1:
+            start_diameter = st.number_input("Starting Diameter (in inches)", value=1.0, min_value=0.01)
+            finish_diameter = st.number_input("Finish Diameter (in inches, 0 = default to first profile)", value=0.0, min_value=0.0)
+            if finish_diameter == 0.0:
+                finish_diameter = profile_points[0][1]
+            taper_length = st.number_input("Taper Length (in inches)", value=29.0, min_value=0.01)
+            tail_extension = st.number_input("Tailstock Extension (in inches)", value=2.0, min_value=0.0)
+            step = st.number_input("Step Size (inches)", value=0.25, min_value=0.001)
+        with col2:
+            head_extension = st.number_input("Headstock Extension (in inches)", value=2.0, min_value=0.0)
+            tool_diameter = st.number_input("Tool Diameter (in inches)", value=0.625, min_value=0.01)
+            pass_depth = st.number_input("Pass Depth (radial, in inches)", value=0.025, min_value=0.001)
+            feed_rate = st.number_input("Feed Rate (inches per minute)", value=1000, min_value=1)
+            safe_clearance = st.number_input("Safe Clearance (inches)", value=0.2, min_value=0.001)
 
     if st.button("Generate Taper & Preview"):
 
@@ -436,5 +463,4 @@ def main():
         st.download_button("Download G-code", data=gcode, file_name="taper.nc", mime="text/plain")
 
 if __name__ == "__main__":
-
     main()
