@@ -151,7 +151,7 @@ def generate_gcode(profile_points, tool_diameter, feed_rate_ipm, pass_depth_in, 
     ])
 
     max_len = max(len(line) for line in header_lines)
-    field_width = max_len + 2
+    field_width = max_len + 4
 
     lines = []
     lines.append('%')
@@ -267,5 +267,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
