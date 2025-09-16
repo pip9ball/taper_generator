@@ -167,35 +167,7 @@ def generate_gcode(profile_points, tool_diameter, feed_rate_ipm, pass_depth_in, 
     lines.append(f'M03 S{spindle_speed}  ; Spindle on clockwise')
     lines.append('')
 
-    #lines = []
-    #width = 60
-    #lines.append("%")
-    #lines.append("*" * width)
-    #lines.append(f"*{'Magni CNC Taper Generator':^{width - 2}}*")
-    #lines.append("*" * width)
-    #lines.append(f"* Start Diameter: {start_diameter:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Finish Diameter: {finish_diameter:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Taper Length: {taper_length:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Tailstock Extension: {tail_extension:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Headstock Extension: {head_extension:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Tool Diameter: {tool_diameter:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Pass Depth: {pass_depth_in:.4f} inches".ljust(width - 1) + "*")
-    #lines.append(f"* Number of Passes: {passes}".ljust(width - 1) + "*")
-    #lines.append(f"* Feed Rate: {feed_rate_ipm} ipm".ljust(width - 1) + "*")
-    #lines.append(f"* Safe Clearance: {safe_clearance:.4f} inches".ljust(width - 1) + "*")
-    #lines.append("*" * width)
-    #lines.append("* Profile points (x (in), diameter (in)):" .ljust(width - 1) + "*")
-    #for x, d in profile_points:
-        #lines.append(f"*  x={x:.3f}, d={d:.4f}".ljust(width - 1) + "*")
-    #lines.append("*" * width)
-    #lines.append("")
-
-    #lines.append("G21 ; Set units to millimeters")
-    #lines.append("G90 ; Absolute positioning")
-    #lines.append("G94 ; Feed rate per minute")
-    #lines.append("M03 ; Spindle ON")
-    #lines.append("")
-
+   
     for p in range(1, passes + 1):
         removal = p * pass_depth_in * 2   # diameter removal
         lines.append(f"; Pass {p}, remove diameter: {removal:.4f} inches")
@@ -295,4 +267,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
