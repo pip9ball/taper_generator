@@ -359,7 +359,7 @@ def main():
 
     profile_input = st.text_area(
         "Enter taper profile points as comma separated (x1, d1, x2, d2, ...)",
-        value="0,1.0,14.5,0.65,29,0.508"
+        value="0,0.840,16,0.580,29,0.502"
     )
 
     try:
@@ -436,4 +436,5 @@ def main():
         st.download_button("Download G-code", data=gcode, file_name="taper.nc", mime="text/plain")
 
 if __name__ == "__main__":
+
     main()
