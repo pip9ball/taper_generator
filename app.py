@@ -245,20 +245,6 @@ def main():
                                finish_diameter, taper_length, tail_extension, head_extension,
                                safe_clearance, step, verbose=True)
 
-#       ''' gcode = generate_taper_gcode_with_finish_joint(
-#            profile_points,
-#            tool_diameter,
-#            feed_rate,
-#            pass_depth,
-#            taper_length,
-#            start_diameter,
-#            finish_diameter,
-#            tail_extension,
-#            head_extension,
-#            safe_clearance,
-#            step,
-#            verbose=True
-#        )
         st.subheader("Generated G-code (first 100 lines):")
         st.code("\n".join(gcode.splitlines()[:100]))
 
@@ -267,6 +253,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
